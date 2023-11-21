@@ -10,7 +10,8 @@ import cluster from 'node:cluster';
 import { createAdapter, setupPrimary } from '@socket.io/cluster-adapter';
 
 if (cluster.isPrimary) {
-  // const numCPUs = availableParallelism();
+  const numCPUs = availableParallelism();
+  console.log(numCPUs, 'numCPUs');
   // for (let i = 0; i < numCPUs; i++) {
   //   cluster.fork({
   //     PORT: 3000 + i
