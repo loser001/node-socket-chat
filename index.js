@@ -9,14 +9,17 @@ import { availableParallelism } from 'node:os';
 import cluster from 'node:cluster';
 import { createAdapter, setupPrimary } from '@socket.io/cluster-adapter';
 
+// console.log(cluster, 'cluster');
 if (cluster.isPrimary) {
-  const numCPUs = availableParallelism();
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork({
-      PORT: 3000 + i
-    });
-  }
-
+  // const numCPUs = availableParallelism();
+  // for (let i = 0; i < numCPUs; i++) {
+  //   cluster.fork({
+  //     PORT: 3000 + i
+  //   });
+  // }
+  cluster.fork({
+    PORT: 3000
+  });
   setupPrimary();
 } else {
   const db = await open({
@@ -39,11 +42,11 @@ if (cluster.isPrimary) {
     adapter: createAdapter()
   });
 
-  const __dirname = dirname(fileURLToPath(import.meta.url));
+  // const __dirname = dirname(fileURLToPath(import.meta.url));
 
-  app.get('/', (req, res) => {
-    res.sendFile(join(__dirname, 'index.html'));
-  });
+  // app.get('/', (req, res) => {
+  //   res.sendFile(join(__dirname, 'index.html'));
+  // });
 
   io.on('connection', async (socket) => {
     socket.on('chat message', async (msg, clientOffset, callback) => {
@@ -67,7 +70,7 @@ if (cluster.isPrimary) {
         await db.each('SELECT id, content FROM messages WHERE id > ?',
           [socket.handshake.auth.serverOffset || 0],
           (_err, row) => {
-            console.log(row, 'row');
+            // console.log(row, 'row');
             socket.emit('chat message', row.content, row.id);
           }
         )
