@@ -9,7 +9,6 @@ import { availableParallelism } from 'node:os';
 import cluster from 'node:cluster';
 import { createAdapter, setupPrimary } from '@socket.io/cluster-adapter';
 
-// console.log(cluster, 'cluster');
 if (cluster.isPrimary) {
   // const numCPUs = availableParallelism();
   // for (let i = 0; i < numCPUs; i++) {
